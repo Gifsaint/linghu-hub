@@ -7,7 +7,9 @@
   <meta name="description" content="令狐：在新加坡折腾 AI 与自动化的硬核中年。YouTube、小红书、Facebook、Bilibili 平台入口与最新视频。" />
   <meta property="og:title" content="令狐｜在新加坡折腾 AI 与自动化的硬核中年" />
   <meta property="og:description" content="拆解工具 · 打造系统 · 把想法变资产。AI × 认知 × 投资 × 系统化成长。" />
-  <meta property="og:image" content="assets/banner.jpg" />
+  <meta property="og:image" content="https://gifsaint.github.io/linghu-hub/assets/banner.jpg" />
+  <meta property="og:url" content="https://gifsaint.github.io/linghu-hub/" />
+  <meta property="og:type" content="website" />
   <link rel="icon" href="assets/avatar.png" type="image/png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,6 +30,10 @@
       --radius: 18px;
       --pad: clamp(1rem, 3vw, 1.5rem);
       --max: 920px;
+      --yt: #ff4d4d;
+      --xhs: #ff5a6e;
+      --fb: #5b8def;
+      --bili: #00b5e5;
     }
     *, *::before, *::after { box-sizing: border-box; }
     html {
@@ -63,25 +69,27 @@
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
       background: #0a1028;
-      aspect-ratio: 21 / 8;
-      max-height: 280px;
+      aspect-ratio: 16 / 9;
+      max-height: 320px;
     }
     .hero-banner img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: center center;
+      object-position: center 35%;
       display: block;
     }
     .hero-banner::after {
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, transparent 50%, rgba(5,10,27,0.5) 100%);
+      background:
+        linear-gradient(180deg, rgba(5,10,27,0.15) 0%, transparent 35%, rgba(5,10,27,0.55) 78%, rgba(5,10,27,0.92) 100%),
+        radial-gradient(ellipse 70% 55% at 50% 100%, rgba(5,10,27,0.75), transparent 70%);
       pointer-events: none;
     }
     .profile {
-      margin-top: -48px;
+      margin-top: -56px;
       position: relative;
       z-index: 2;
       display: flex;
@@ -91,19 +99,20 @@
       width: 100%;
     }
     .avatar {
-      width: 108px;
-      height: 108px;
+      width: 124px;
+      height: 124px;
       border-radius: 50%;
       object-fit: cover;
       border: 3px solid var(--gold);
       box-shadow:
-        0 0 0 4px rgba(5,10,27,0.95),
-        0 12px 36px rgba(94,176,255,0.28),
-        0 0 24px var(--gold-soft);
+        0 0 0 5px rgba(5,10,27,0.96),
+        0 0 0 6px rgba(212,175,55,0.35),
+        0 14px 40px rgba(94,176,255,0.28),
+        0 0 28px var(--gold-soft);
       background: var(--card);
     }
     h1 {
-      margin: 0.9rem 0 0;
+      margin: 0.95rem 0 0;
       font-size: clamp(1.65rem, 4vw, 2.05rem);
       font-weight: 700;
       letter-spacing: 0.06em;
@@ -133,21 +142,30 @@
       padding: 0.22rem 0.72rem;
     }
     .bio {
-      margin: 1.35rem 0 0;
+      margin: 1.4rem auto 0;
       width: 100%;
+      max-width: 38em;
       color: var(--muted);
-      font-size: 0.96rem;
-      text-align: center;
+      font-size: 0.95rem;
+      text-align: left;
+      line-height: 1.7;
       background: rgba(255,255,255,0.03);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 1.2rem 1.35rem;
+      padding: 1.15rem 1.35rem;
     }
-    .bio p { margin: 0 0 0.75rem; }
+    .bio p { margin: 0 0 0.7rem; }
     .bio p:last-child { margin-bottom: 0; }
     .section {
       width: 100%;
       margin-top: 2rem;
+    }
+    .section.follow {
+      margin-top: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
+    .section.videos {
+      margin-top: 2.75rem;
     }
     .section-head {
       display: flex;
@@ -181,44 +199,63 @@
       font-size: 0.86rem;
       text-align: center;
     }
+    .subhead {
+      margin: 1.6rem 0 0.85rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: center;
+    }
     .links {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.75rem;
+      gap: 0.85rem;
       width: 100%;
     }
-    a.link, .link.soon {
+    a.link {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      padding: 0.95rem 1rem;
+      gap: 0.85rem;
+      padding: 1.1rem 1.15rem;
+      min-height: 72px;
       border-radius: 14px;
       text-decoration: none;
       color: var(--text);
       background: var(--card);
       border: 1px solid var(--border);
-      transition: transform .15s ease, border-color .15s ease, background .15s ease;
+      border-left-width: 4px;
+      transition: transform .15s ease, border-color .15s ease, background .15s ease, box-shadow .15s ease;
       min-width: 0;
     }
+    a.link.yt { border-left-color: var(--yt); }
+    a.link.xhs { border-left-color: var(--xhs); }
+    a.link.fb { border-left-color: var(--fb); }
+    a.link.bili { border-left-color: var(--bili); }
     a.link:hover {
       transform: translateY(-2px);
-      border-color: rgba(94,176,255,0.45);
       background: var(--card-hover);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.3);
     }
-    a.link .left, .link.soon .left {
+    a.link.yt:hover { border-color: rgba(255,77,77,0.45); }
+    a.link.xhs:hover { border-color: rgba(255,90,110,0.45); }
+    a.link.fb:hover { border-color: rgba(91,141,239,0.45); }
+    a.link.bili:hover { border-color: rgba(0,181,229,0.45); }
+    a.link .left {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.85rem;
       min-width: 0;
+      flex: 1;
     }
     .badge {
-      width: 40px;
-      height: 40px;
-      border-radius: 11px;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
       display: grid;
       place-items: center;
-      font-size: 0.76rem;
+      font-size: 0.78rem;
       font-weight: 700;
       background: rgba(255,255,255,0.06);
       flex-shrink: 0;
@@ -227,17 +264,21 @@
     .badge.xhs { background: rgba(255,80,100,0.16); color: #ff7a8a; }
     .badge.fb { background: rgba(90,140,255,0.14); color: #8ab4ff; }
     .badge.bili { background: rgba(0,180,255,0.14); color: #6ed4ff; }
-    .meta { display: flex; flex-direction: column; gap: 0.08rem; min-width: 0; text-align: left; }
-    .meta strong { font-size: 0.95rem; font-weight: 600; }
+    .meta { display: flex; flex-direction: column; gap: 0.12rem; min-width: 0; text-align: left; }
+    .meta strong { font-size: 1rem; font-weight: 600; }
     .meta span {
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       color: var(--muted);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .arrow { color: var(--muted); font-size: 1rem; flex-shrink: 0; }
-    .soon { opacity: 0.55; pointer-events: none; }
+    .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      width: 100%;
+    }
     .video-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -261,6 +302,21 @@
       border-color: rgba(212,175,55,0.4);
       background: var(--card-hover);
       box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+    }
+    a.vcard.featured {
+      border-color: rgba(212,175,55,0.22);
+    }
+    a.vcard.featured .vtitle {
+      font-size: 0.94rem;
+      font-weight: 600;
+      padding: 0.95rem 1rem 1.1rem;
+      min-height: 3.2em;
+      -webkit-line-clamp: 3;
+    }
+    a.vcard.featured .play {
+      width: 48px;
+      height: 48px;
+      font-size: 0.9rem;
     }
     .thumb-wrap {
       position: relative;
@@ -323,32 +379,8 @@
       min-height: 2.8em;
       text-align: left;
     }
-    .xhs-card {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      padding: 1.1rem 1.2rem;
-      border-radius: 14px;
-      text-decoration: none;
-      color: var(--text);
-      background: linear-gradient(135deg, rgba(255,80,100,0.12), rgba(18,26,51,0.9));
-      border: 1px solid rgba(255,122,138,0.28);
-      transition: transform .15s ease, border-color .15s ease;
-      width: 100%;
-      text-align: left;
-    }
-    .xhs-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(255,122,138,0.5);
-    }
-    .xhs-card p {
-      margin: 0.25rem 0 0;
-      color: var(--muted);
-      font-size: 0.86rem;
-    }
     footer {
-      margin-top: 2.5rem;
+      margin-top: 2.75rem;
       text-align: center;
       color: rgba(154,166,196,0.7);
       font-size: 0.8rem;
@@ -359,15 +391,18 @@
       opacity: 0.85;
     }
     @media (max-width: 720px) {
+      .featured-grid,
       .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .hero-banner { max-height: 180px; aspect-ratio: 16 / 7; }
-      .avatar { width: 92px; height: 92px; }
-      .profile { margin-top: -40px; }
-      .bio { text-align: left; }
+      .hero-banner { max-height: 200px; aspect-ratio: 16 / 8; }
+      .avatar { width: 112px; height: 112px; }
+      .profile { margin-top: -48px; }
+      .bio { max-width: none; padding: 1.05rem 1.15rem; }
     }
     @media (max-width: 520px) {
       .links { grid-template-columns: 1fr; }
+      .featured-grid,
       .video-grid { grid-template-columns: 1fr; }
+      a.vcard.featured .vtitle { -webkit-line-clamp: 2; min-height: 2.8em; }
     }
   </style>
 </head>
@@ -376,12 +411,12 @@
     <div class="hero-banner">
       <picture>
         <source srcset="assets/banner.webp" type="image/webp" />
-        <img src="assets/banner.jpg" alt="令狐AI複利實驗室 — AI × 認知 × 投資 × 系統化成長" width="1920" height="731" />
+        <img src="assets/banner.jpg" alt="令狐 — 深夜深度工作：AI 与系统化成长" width="1920" height="1080" />
       </picture>
     </div>
 
     <div class="profile">
-      <img class="avatar" src="assets/avatar.png" alt="令狐头像" width="112" height="112" />
+      <img class="avatar" src="assets/avatar.png" alt="令狐头像" width="124" height="124" />
       <h1>令狐</h1>
       <p class="tagline">在新加坡折腾 AI 与自动化的硬核中年</p>
       <div class="pillars" aria-label="主题支柱">
@@ -397,232 +432,222 @@
       <p>时代在变，工具在变，但向内探索与向外突破的野心始终不变。感谢驻足，欢迎订阅同行。</p>
     </div>
 
-    <section class="section" aria-labelledby="follow-heading">
+    <section class="section follow" aria-labelledby="follow-heading">
       <div class="section-head"><h2 id="follow-heading">关注我</h2></div>
       <div class="links">
-      <a class="link" href="https://www.youtube.com/@令狐投资" target="_blank" rel="noopener noreferrer">
-        <div class="left">
-          <div class="badge yt">YT</div>
-          <div class="meta">
-            <strong>YouTube</strong>
-            <span>@令狐投资 · 视频与长内容</span>
+        <a class="link yt" href="https://www.youtube.com/@令狐投资" target="_blank" rel="noopener noreferrer">
+          <div class="left">
+            <div class="badge yt">YT</div>
+            <div class="meta">
+              <strong>YouTube</strong>
+              <span>@令狐投资 · 视频与长内容</span>
+            </div>
           </div>
-        </div>
-        <span class="arrow">→</span>
-      </a>
-      <a class="link" href="https://www.xiaohongshu.com/user/profile/59e2f01e27d59434bb213a62" target="_blank" rel="noopener noreferrer">
-        <div class="left">
-          <div class="badge xhs">红</div>
-          <div class="meta">
-            <strong>小红书</strong>
-            <span>短内容 · 日常与实践</span>
+        </a>
+        <a class="link xhs" href="https://www.xiaohongshu.com/user/profile/59e2f01e27d59434bb213a62" target="_blank" rel="noopener noreferrer">
+          <div class="left">
+            <div class="badge xhs">红</div>
+            <div class="meta">
+              <strong>小红书</strong>
+              <span>短内容 · 日常与实践</span>
+            </div>
           </div>
-        </div>
-        <span class="arrow">→</span>
-      </a>
-      <a class="link" href="https://www.facebook.com/profile.php?id=61594953023147" target="_blank" rel="noopener noreferrer">
-        <div class="left">
-          <div class="badge fb">FB</div>
-          <div class="meta">
-            <strong>Facebook</strong>
-            <span>动态与短内容</span>
+        </a>
+        <a class="link fb" href="https://www.facebook.com/profile.php?id=61594953023147" target="_blank" rel="noopener noreferrer">
+          <div class="left">
+            <div class="badge fb">FB</div>
+            <div class="meta">
+              <strong>Facebook</strong>
+              <span>动态与短内容</span>
+            </div>
           </div>
-        </div>
-        <span class="arrow">→</span>
-      </a>
-      <a class="link" href="https://space.bilibili.com/3707036304935692" target="_blank" rel="noopener noreferrer">
-        <div class="left">
-          <div class="badge bili">B站</div>
-          <div class="meta">
-            <strong>Bilibili</strong>
-            <span>视频与中文长内容</span>
+        </a>
+        <a class="link bili" href="https://space.bilibili.com/3707036304935692" target="_blank" rel="noopener noreferrer">
+          <div class="left">
+            <div class="badge bili">B站</div>
+            <div class="meta">
+              <strong>Bilibili</strong>
+              <span>视频与中文长内容</span>
+            </div>
           </div>
-        </div>
-        <span class="arrow">→</span>
-      </a>
-    </div>
-    </section>
-
-    <section class="section" aria-labelledby="videos-heading">
-      <div class="section-head"><h2 id="videos-heading">视频</h2></div>
-          <p class="section-note">来自 YouTube @令狐投资 · 点击卡片打开原视频</p>
-    <div class="video-grid">
-      <a class="vcard" href="https://www.youtube.com/watch?v=JIfyS6W3PU0" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/JIfyS6W3PU0/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">4:11</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">中秋賞月硬核指南：今晚抬頭看月亮，這幾個秘密讓你看月亮的維度從此與眾不同</h3>
-      </a>
-      <a class="vcard" href="https://www.youtube.com/watch?v=pyYwI-Rtre4" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/pyYwI-Rtre4/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">6:48</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">《我替你付費讀全球最貴的腦子》Ben Thompson 聚合理论（Aggregation Theory）</h3>
-      </a>
-      <a class="vcard" href="https://www.youtube.com/watch?v=p-ZXxQeIdQo" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/p-ZXxQeIdQo/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">5:51</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">《用 AI 強行贖回你的「認知頻寬」：打破窮忙死循環的 3 步閒暇工作流》</h3>
-      </a>
-      <a class="vcard" href="https://www.youtube.com/watch?v=yE3xXCQB_WI" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/yE3xXCQB_WI/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">6:08</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">AI 智能體最被低估的王炸：一念成神！把腦中一閃而過的靈感，直接變成資產</h3>
-      </a>
-      <a class="vcard" href="https://www.youtube.com/watch?v=_Q9McguTpp8" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/_Q9McguTpp8/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">8:53</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">人類作弊器·時間與動量篇：別再罵自己懶了！用物理學和心理學算法徹底碾碎拖延與內耗</h3>
-      </a>
-      <a class="vcard" href="https://www.youtube.com/watch?v=7AY2Xoqbstw" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/7AY2Xoqbstw/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">11:00</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">人类作弊器·《财富觉醒篇》：把华尔街殿堂级神书拆成搞钱外挂！</h3>
-      </a>
-      <a class="vcard" href="https://www.youtube.com/watch?v=klli1OkRxSM" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/klli1OkRxSM/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">7:01</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">人类作弊器的姊妹篇：别拿肉身硬扛算法，给自己装一套AI防御系统</h3>
-      </a>
-      <a class="vcard" href="https://www.youtube.com/watch?v=f3B5tGZ41ak" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/f3B5tGZ41ak/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">5:04</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">别用碳基肉身硬抗超级算法！一套真正可执行的“外置前额叶”AI兜底系统</h3>
-      </a>
-      <a class="vcard" href="https://www.youtube.com/watch?v=v2J_8nvXa8A" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/v2J_8nvXa8A/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">11:25</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">别再读书了：我把人类顶级知识，做成了 AI 外挂</h3>
-      </a>
-      <a class="vcard" href="https://www.youtube.com/watch?v=RxHdyvcdSMI" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/RxHdyvcdSMI/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">7:09</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">王阳明 AI Skill 给了我一个惊天结论：你认错老板了。王阳明 AI Skill 的第三次进化：夺回你人生的最高权限</h3>
-      </a>
-      <a class="vcard" href="https://www.youtube.com/watch?v=QlehSKp77qs" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/QlehSKp77qs/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">6:11</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">王阳明Skill再次疯狂进化：你对“事上磨练”的理解，可能全错了。世上磨练是修心，不是忍气吞声。</h3>
-      </a>
-      <a class="vcard" href="https://www.youtube.com/watch?v=_qvd5T2LWlo" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/_qvd5T2LWlo/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">5:20</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">王阳明 Skill 又进化了：这次我的 AI智能体 用第一性原理推算出了“心外无物”</h3>
-      </a>
-      <a class="vcard" href="https://www.youtube.com/watch?v=YIL-dDGga2M" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/YIL-dDGga2M/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">11:15</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">换个AI，又要重新教？我给AI装了一颗“海马体”</h3>
-      </a>
-      <a class="vcard" href="https://www.youtube.com/watch?v=9BhC5yVuoZA" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/9BhC5yVuoZA/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">4:59</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">我把王阳明做成了AI Skill：500年前的圣人，被我变成了认知神器</h3>
-      </a>
-      <a class="vcard" href="https://www.youtube.com/watch?v=8982qKjkNN0" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/8982qKjkNN0/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">5:30</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">AI越繁榮，中產越危險？K型經濟正在加速形成</h3>
-      </a>
-      <a class="vcard" href="https://www.youtube.com/watch?v=iVAXjZhS_9I" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/iVAXjZhS_9I/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">5:30</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">AI医学突破+3本神书，让我立刻改变了人生规划</h3>
-      </a>
-      <a class="vcard" href="https://www.youtube.com/watch?v=-0C5rAhek-0" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/-0C5rAhek-0/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">5:55</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">AI让碎片化的思考，第一次可以被积累</h3>
-      </a>
-      <a class="vcard" href="https://www.youtube.com/watch?v=lpCJVATos60" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/lpCJVATos60/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">6:08</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">AI 越強，你越該拼命練習的「原能力」是什麼？它決定你被 AI 掏空，還是放大十倍！</h3>
-      </a>
-      <a class="vcard" href="https://www.youtube.com/watch?v=qink3K0bdEw" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/qink3K0bdEw/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">9:27</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">從算力到應用：AI是这个時代最有確定性的投資機會，是正在兑现的现实红利</h3>
-      </a>
-      <a class="vcard" href="https://www.youtube.com/watch?v=JqUPybMOpbI" target="_blank" rel="noopener noreferrer">
-        <div class="thumb-wrap">
-          <img class="thumb" src="https://i.ytimg.com/vi/JqUPybMOpbI/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
-          <span class="duration">11:41</span>
-          <span class="play" aria-hidden="true">▶</span>
-        </div>
-        <h3 class="vtitle">The Age of Awakening: A Mind-Blowing Guide to Self-Transformation!</h3>
-      </a>
-    </div>
-    </section>
-
-    <section class="section" aria-labelledby="xhs-heading">
-      <div class="section-head"><h2 id="xhs-heading">小红书</h2></div>
-    <a class="xhs-card" href="https://www.xiaohongshu.com/user/profile/59e2f01e27d59434bb213a62" target="_blank" rel="noopener noreferrer">
-      <div>
-        <strong>在小红书关注令狐</strong>
-        <p>公开笔记需在站内浏览（本页未抓取帖子，避免登录墙与内容误差）。点此进入主页。</p>
+        </a>
       </div>
-      <span class="arrow">→</span>
-    </a>
+    </section>
+
+    <section class="section videos" aria-labelledby="videos-heading">
+      <div class="section-head"><h2 id="videos-heading">视频</h2></div>
+      <p class="section-note">来自 YouTube @令狐投资 · 点击卡片打开原视频</p>
+
+      <div class="featured-grid">
+        <a class="vcard featured" href="https://www.youtube.com/watch?v=JIfyS6W3PU0" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/JIfyS6W3PU0/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">4:11</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">中秋賞月硬核指南：今晚抬頭看月亮，這幾個秘密讓你看月亮的維度從此與眾不同</h3>
+        </a>
+        <a class="vcard featured" href="https://www.youtube.com/watch?v=pyYwI-Rtre4" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/pyYwI-Rtre4/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">6:48</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">《我替你付費讀全球最貴的腦子》Ben Thompson 聚合理论（Aggregation Theory）</h3>
+        </a>
+        <a class="vcard featured" href="https://www.youtube.com/watch?v=p-ZXxQeIdQo" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/p-ZXxQeIdQo/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">5:51</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">《用 AI 強行贖回你的「認知頻寬」：打破窮忙死循環的 3 步閒暇工作流》</h3>
+        </a>
+      </div>
+
+      <p class="subhead" id="more-videos">更多视频</p>
+      <div class="video-grid">
+        <a class="vcard" href="https://www.youtube.com/watch?v=yE3xXCQB_WI" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/yE3xXCQB_WI/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">6:08</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">AI 智能體最被低估的王炸：一念成神！把腦中一閃而過的靈感，直接變成資產</h3>
+        </a>
+        <a class="vcard" href="https://www.youtube.com/watch?v=_Q9McguTpp8" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/_Q9McguTpp8/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">8:53</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">人類作弊器·時間與動量篇：別再罵自己懶了！用物理學和心理學算法徹底碾碎拖延與內耗</h3>
+        </a>
+        <a class="vcard" href="https://www.youtube.com/watch?v=7AY2Xoqbstw" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/7AY2Xoqbstw/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">11:00</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">人类作弊器·《财富觉醒篇》：把华尔街殿堂级神书拆成搞钱外挂！</h3>
+        </a>
+        <a class="vcard" href="https://www.youtube.com/watch?v=klli1OkRxSM" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/klli1OkRxSM/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">7:01</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">人类作弊器的姊妹篇：别拿肉身硬扛算法，给自己装一套AI防御系统</h3>
+        </a>
+        <a class="vcard" href="https://www.youtube.com/watch?v=f3B5tGZ41ak" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/f3B5tGZ41ak/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">5:04</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">别用碳基肉身硬抗超级算法！一套真正可执行的“外置前额叶”AI兜底系统</h3>
+        </a>
+        <a class="vcard" href="https://www.youtube.com/watch?v=v2J_8nvXa8A" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/v2J_8nvXa8A/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">11:25</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">别再读书了：我把人类顶级知识，做成了 AI 外挂</h3>
+        </a>
+        <a class="vcard" href="https://www.youtube.com/watch?v=RxHdyvcdSMI" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/RxHdyvcdSMI/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">7:09</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">王阳明 AI Skill 给了我一个惊天结论：你认错老板了。王阳明 AI Skill 的第三次进化：夺回你人生的最高权限</h3>
+        </a>
+        <a class="vcard" href="https://www.youtube.com/watch?v=QlehSKp77qs" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/QlehSKp77qs/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">6:11</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">王阳明Skill再次疯狂进化：你对“事上磨练”的理解，可能全错了。世上磨练是修心，不是忍气吞声。</h3>
+        </a>
+        <a class="vcard" href="https://www.youtube.com/watch?v=_qvd5T2LWlo" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/_qvd5T2LWlo/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">5:20</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">王阳明 Skill 又进化了：这次我的 AI智能体 用第一性原理推算出了“心外无物”</h3>
+        </a>
+        <a class="vcard" href="https://www.youtube.com/watch?v=YIL-dDGga2M" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/YIL-dDGga2M/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">11:15</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">换个AI，又要重新教？我给AI装了一颗“海马体”</h3>
+        </a>
+        <a class="vcard" href="https://www.youtube.com/watch?v=9BhC5yVuoZA" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/9BhC5yVuoZA/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">4:59</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">我把王阳明做成了AI Skill：500年前的圣人，被我变成了认知神器</h3>
+        </a>
+        <a class="vcard" href="https://www.youtube.com/watch?v=8982qKjkNN0" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/8982qKjkNN0/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">5:30</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">AI越繁榮，中產越危險？K型經濟正在加速形成</h3>
+        </a>
+        <a class="vcard" href="https://www.youtube.com/watch?v=iVAXjZhS_9I" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/iVAXjZhS_9I/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">5:30</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">AI医学突破+3本神书，让我立刻改变了人生规划</h3>
+        </a>
+        <a class="vcard" href="https://www.youtube.com/watch?v=-0C5rAhek-0" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/-0C5rAhek-0/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">5:55</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">AI让碎片化的思考，第一次可以被积累</h3>
+        </a>
+        <a class="vcard" href="https://www.youtube.com/watch?v=lpCJVATos60" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/lpCJVATos60/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">6:08</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">AI 越強，你越該拼命練習的「原能力」是什麼？它決定你被 AI 掏空，還是放大十倍！</h3>
+        </a>
+        <a class="vcard" href="https://www.youtube.com/watch?v=qink3K0bdEw" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/qink3K0bdEw/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">9:27</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">從算力到應用：AI是这个時代最有確定性的投資機會，是正在兑现的现实红利</h3>
+        </a>
+        <a class="vcard" href="https://www.youtube.com/watch?v=JqUPybMOpbI" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <img class="thumb" src="https://i.ytimg.com/vi/JqUPybMOpbI/hqdefault.jpg" alt="" loading="lazy" width="480" height="360" />
+            <span class="duration">11:41</span>
+            <span class="play" aria-hidden="true">▶</span>
+          </div>
+          <h3 class="vtitle">The Age of Awakening: A Mind-Blowing Guide to Self-Transformation!</h3>
+        </a>
+      </div>
     </section>
 
     <footer>
-      © 令狐 · <span class="lab">令狐AI複利實驗室</span> · Personal Hub · v0.5
+      © 令狐 · <span class="lab">令狐AI複利實驗室</span> · Personal Hub · v0.6
     </footer>
   </main>
 </body>
