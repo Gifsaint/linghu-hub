@@ -139,21 +139,24 @@ def enrich_durations(videos: list[dict]) -> None:
         v["duration"] = fetch_duration_yt_dlp(v["id"], yt_dlp)
 
 
-def fetch_latest() -> list[dict]:
+def fetch_latest() -> tuple[list[dict], str]:
+    """Return (videos, source). yt-dlp is primary (full uploads list with
+    durations); the RSS feed is only a fallback because it caps at 15 items."""
     errors: list[str] = []
     try:
-        videos = fetch_via_rss()
-        enrich_durations(videos)
-        print("source=rss", file=sys.stderr)
-        return videos
-    except Exception as exc:  # noqa: BLE001
-        errors.append(f"RSS: {exc}")
-    try:
         videos = fetch_via_yt_dlp()
-        print("source=yt-dlp", file=sys.stderr)
-        return videos
+        return videos, "yt-dlp"
+    except subprocess.CalledProcessError as exc:
+        tail = (exc.stderr or "").strip().splitlines()[-3:]
+        errors.append(f"yt-dlp: exit {exc.returncode}: {' | '.join(tail)}")
     except Exception as exc:  # noqa: BLE001
         errors.append(f"yt-dlp: {exc}")
+    print(f"WARN: {errors[-1]}; falling back to RSS", file=sys.stderr)
+    try:
+        videos = fetch_via_rss()
+        return videos, "rss"
+    except Exception as exc:  # noqa: BLE001
+        errors.append(f"RSS: {exc}")
     raise RuntimeError("; ".join(errors))
 
 
@@ -162,6 +165,7 @@ def render_card(video: dict, featured: bool) -> str:
     title = html.escape(video.get("title") or "", quote=False)
     duration = video.get("duration") or ""
     cls = "vcard featured" if featured else "vcard"
+    thumb = video.get("thumbnail") or f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg"
     duration_html = (
         f'\n            <span class="duration">{html.escape(duration)}</span>' if duration else ""
     )
@@ -169,7 +173,7 @@ def render_card(video: dict, featured: bool) -> str:
         f'        <a class="{cls}" href="https://www.youtube.com/watch?v={vid}" '
         f'target="_blank" rel="noopener noreferrer">\n'
         f'          <div class="thumb-wrap">\n'
-        f'            <img class="thumb" src="https://i.ytimg.com/vi/{vid}/hqdefault.jpg" '
+        f'            <img class="thumb" src="{html.escape(thumb)}" '
         f'alt="" loading="lazy" width="480" height="360" />'
         f"{duration_html}\n"
         f'            <span class="play" aria-hidden="true">▶</span>\n'
@@ -257,34 +261,110 @@ def replace_section(text: str, start: str, end: str, body: str) -> str:
     return pattern.sub(f"{start}\n{body}\n        {end}", text, count=1)
 
 
-def rewrite_index(videos: list[dict]) -> bool:
+CARD_RE = re.compile(r'<a class="vcard[^"]*"[^>]*>.*?</a>', flags=re.S)
+
+
+def parse_cards(chunk: str) -> list[dict]:
+    """Parse rendered video cards back into dicts (id, title, thumbnail, duration)."""
+    videos: list[dict] = []
+    for card in CARD_RE.findall(chunk):
+        m_id = re.search(r"youtube\.com/watch\?v=([A-Za-z0-9_-]{11})", card)
+        if not m_id:
+            continue
+        m_title = re.search(r'<h3 class="vtitle">(.*?)</h3>', card, flags=re.S)
+        m_thumb = re.search(r'<img class="thumb" src="([^"]*)"', card)
+        m_dur = re.search(r'<span class="duration">(.*?)</span>', card, flags=re.S)
+        videos.append(
+            {
+                "id": m_id.group(1),
+                "title": html.unescape(m_title.group(1).strip()) if m_title else "",
+                "thumbnail": html.unescape(m_thumb.group(1)) if m_thumb else "",
+                "duration": html.unescape(m_dur.group(1).strip()) if m_dur else "",
+            }
+        )
+    return videos
+
+
+def merge_videos(fetched: list[dict], existing: list[dict], cap: int = MAX_VIDEOS) -> list[dict]:
+    """Fetched items first (newest first, as returned), then previously listed
+    videos that were not refetched, in their prior order. Dedupe by id, cap.
+    Missing fields on fetched items (duration/thumbnail/title) are filled from
+    the existing card so a degraded source never strips data off the page."""
+    prior = {v["id"]: v for v in existing}
+    merged: list[dict] = []
+    seen: set[str] = set()
+    for v in fetched:
+        vid = v.get("id")
+        if not vid or vid in seen:
+            continue
+        seen.add(vid)
+        item = dict(v)
+        old = prior.get(vid)
+        if old:
+            for key in ("title", "duration", "thumbnail"):
+                if not item.get(key) and old.get(key):
+                    item[key] = old[key]
+        merged.append(item)
+    for v in existing:
+        if v["id"] in seen:
+            continue
+        seen.add(v["id"])
+        merged.append(dict(v))
+    return merged[:cap]
+
+
+def load_existing() -> tuple[str, list[dict]]:
     original = INDEX_PATH.read_text(encoding="utf-8")
     text = ensure_markers(original)
-
-    old_ids = extract_ids(section_between(text, FEATURED_START, FEATURED_END)) + extract_ids(
+    existing = parse_cards(section_between(text, FEATURED_START, FEATURED_END)) + parse_cards(
         section_between(text, MORE_START, MORE_END)
     )
-    new_ids = [v["id"] for v in videos]
-    id_changed = old_ids != new_ids
+    return original, existing
+
+
+def rewrite_index(original: str, videos: list[dict]) -> bool:
+    """Render videos into index.html. Returns True only if the rendered video
+    wall (the two marker sections) actually differs from what was there."""
+    text = ensure_markers(original)
+    old_sections = (
+        section_between(text, FEATURED_START, FEATURED_END),
+        section_between(text, MORE_START, MORE_END),
+    )
 
     featured_html = "\n".join(render_card(v, True) for v in videos[:3])
     more_html = "\n".join(render_card(v, False) for v in videos[3:])
     text = replace_section(text, FEATURED_START, FEATURED_END, featured_html)
     text = replace_section(text, MORE_START, MORE_END, more_html)
 
+    new_sections = (
+        section_between(text, FEATURED_START, FEATURED_END),
+        section_between(text, MORE_START, MORE_END),
+    )
+    changed = old_sections != new_sections
+
     if text != original:
         INDEX_PATH.write_text(text, encoding="utf-8")
 
-    return id_changed
+    return changed
 
 
 def main() -> int:
-    videos = fetch_latest()[:MAX_VIDEOS]
+    original, existing = load_existing()
+    fetched, source = fetch_latest()
+    fetched = fetched[:MAX_VIDEOS]
+    print(f"source={source} fetched={len(fetched)} existing={len(existing)}", file=sys.stderr)
+
+    videos = merge_videos(fetched, existing)
     if not videos:
         print("ERROR: no videos fetched", file=sys.stderr)
         return 1
+    # Safety net: never shrink the wall (unless it was already over the cap).
+    if len(videos) < min(len(existing), MAX_VIDEOS):
+        print("ERROR: merged list smaller than existing wall; refusing to write", file=sys.stderr)
+        return 1
 
-    changed = rewrite_index(videos)
+    enrich_durations(videos)  # only for items still lacking a duration
+    changed = rewrite_index(original, videos)
     newest = videos[0]
     print(f"count={len(videos)}")
     print(f"newest_id={newest['id']}")

@@ -11,7 +11,7 @@ echo "$OUT"
 
 CHANGED="$(printf '%s\n' "$OUT" | awk -F= '/^CHANGED=/{print $2; exit}')"
 if [[ "${CHANGED}" != "1" ]]; then
-  echo "No video-id changes; skip commit."
+  echo "No video wall changes; skip commit."
   exit 0
 fi
 
